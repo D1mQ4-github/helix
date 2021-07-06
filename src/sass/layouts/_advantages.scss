@@ -1,0 +1,96 @@
+.advantages {
+    padding: 61px 0 112px 0;
+    &__wrapper {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 60px;
+    }
+    &__info {
+        width: 372px;
+    }
+    &__media {
+        width: 467px;
+    }
+    &__cart {
+        padding: 23px 0;
+        border-top: 1px solid #d7d7d7;
+        overflow: hidden;
+        &:first-child {
+            border-top: none;
+        }
+    }
+    &__header {
+        display: block;
+    }
+    &__btn {
+        position: relative;
+        width: 100%;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        color: #ababab;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 26px;
+        text-align: left;
+        padding-right: 35px;
+        &::before,
+        &::after {
+            content: "";
+            display: block;
+            width: 9px;
+            height: 2px;
+            position: absolute;
+            top: 50%;
+            right: 13px;
+            transform: translateY(-50%);
+            background-color: #ababab;
+            transition: .5s;
+        }
+        &::before {
+            transform: translateX(30%) rotate(-45deg);
+        }
+        &::after {
+            transform: translateX(-30%) rotate(45deg);
+        }
+        &-active {
+            color: $text-color;
+            &::before,
+            &::after {
+                background-color: $text-color;
+            }
+            &::before {
+                transform: translateX(-30%) rotate(-45deg);
+            }
+            &::after {
+                transform: translateX(30%) rotate(45deg);
+            }
+        }
+    }
+    &__img {
+        display: none;
+        margin-top: 22px;
+        &-active {
+            display: block;
+        }
+        img {
+            width: 100%;
+        }
+        &-xs {
+            // display: none;
+            width: 295px;
+            margin: 23px auto 0 auto;
+            box-shadow: 0 0 28px 6px rgba(216, 216, 216, 0.5);
+            // &-active {
+            //     display: block;
+            // }
+        }
+    }
+    &__descr {
+        color: $text-color;
+        overflow: hidden;
+        line-height: 26px;
+        margin-top: 16px;
+    }
+}

@@ -1,0 +1,39 @@
+* {
+    font-family: 'TTNorms', sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.no-scroll {
+    overflow: hidden;
+}
+
+.container {
+    width: 992px;
+    padding: 0 30px;
+    margin: 0 auto;
+    &__benefits {
+        width: 1062px;
+    }
+}
+
+.title {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 40px;
+    text-align: center;
+    color: #363636;
+    padding: 0 20px;
+}
+
+.subtitle {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 27px;
+    letter-spacing: normal;
+    text-align: center;
+    color: #383838;
+    margin-top: 14px;
+    padding: 0 20px;
+}
