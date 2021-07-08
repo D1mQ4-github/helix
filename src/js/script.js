@@ -29,10 +29,10 @@ $(document).ready(function() {
 
 
     const slider = () => {
-        let slider = document.querySelector('.benefits__wrapper'),
-            sliderViewport = slider.querySelector('.benefits__viewport'),
-            sliderWrapper = slider.querySelector('.benefits__stroke'),
-            slides = slider.querySelectorAll('.benefits__item'),
+        let slider = $('.benefits__wrapper'),
+            sliderViewport = $('.benefits__viewport'),
+            sliderWrapper = $('.benefits__stroke'),
+            slides = $('.benefits__item'),
             btns = $('.benefits__btn'),
             slideWidth = slides[0].offsetWidth,
             slideIndex = 0, //Индекс слайда
@@ -40,13 +40,21 @@ $(document).ready(function() {
             posX1 = 0,
             posX2 = 0,
             posFinal = 0,
-            posThreshold = slideWidth / 2, //Граница после которой будет перелистывание
-            trfRegExp = /([-0-9.]+(?=px))/; //Регулярка для получения значения X из transform: translate3d
+            posThreshold = slideWidth / 2; //Граница после которой будет перелистывание
 
         //Функция применяет изменения к wrapper
         const slide = () => {
-            sliderWrapper.style.transition = 'transform .5s';
-            sliderWrapper.style.transform = `translate3d(-${slideIndex * slideWidth}px, 0px, 0px)`;
+            if (slideIndex <= 0) {
+                slideIndex = 0;
+            } else if (slideIndex >= slides.length) {
+                slideIndex = slides.length - 1;
+            }
+            sliderWrapper.css({
+                'transition': 'transform .5s'
+            });
+            sliderWrapper.css({
+                'transform': `translate3d(-${slideIndex * slideWidth}px, 0px, 0px)`
+            });
             //Меняем активные лейблы по индексу
             $(btns).removeClass('benefits__btn-active').eq(slideIndex).addClass('benefits__btn-active');
         }
@@ -58,7 +66,9 @@ $(document).ready(function() {
 
             posInit = posX1 = evt.clientX;
 
-            sliderWrapper.style.transition = '';
+            sliderWrapper.css({
+                'transition': ''
+            });
         }
 
         //action для touchmove
@@ -66,14 +76,16 @@ $(document).ready(function() {
             //Получаем информацию о тапе
             let evt = e.touches[0],
                 //Получаем стили transform для регулярки
-                style = sliderWrapper.style.transform,
+                style = sliderWrapper.position().left,
                 //Готовое значение из регулярки присваиваем в transform
-                transform = +style.match(trfRegExp)[0];
+                transform = +style;
 
             posX2 = posX1 - evt.clientX;
             posX1 = evt.clientX;
 
-            sliderWrapper.style.transform = `translate3d(${transform - posX2}px, 0px, 0px)`;
+            sliderWrapper.css({
+                'transform': `translate3d(${transform - posX2}px, 0px, 0px)`
+            });
         }
 
         //action для touchend
@@ -95,11 +107,13 @@ $(document).ready(function() {
             }
         };
 
-        slider.addEventListener('touchstart', swipeStart);
-        slider.addEventListener('touchmove', swipeAction);
-        slider.addEventListener('touchend', swipeEnd);
+        slider.on('touchstart', swipeStart);
+        slider.on('touchmove', swipeAction);
+        slider.on('touchend', swipeEnd);
 
-        sliderWrapper.style.transform = 'translate3d(0px, 0px, 0px)';
+        sliderWrapper.css({
+            'transform': 'translate3d(0px, 0px, 0px)'
+        });
     }
     slider();
 });
