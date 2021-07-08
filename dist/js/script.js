@@ -29,89 +29,77 @@ $(document).ready(function() {
 
 
     const slider = () => {
-        let slider = $('.benefits__wrapper'),
-            sliderList = $('.benefits__viewport'),
-            sliderTrack = $('.benefits__stroke'),
-            slides = $('.benefits__item'),
+        let slider = document.querySelector('.benefits__wrapper'),
+            sliderViewport = slider.querySelector('.benefits__viewport'),
+            sliderWrapper = slider.querySelector('.benefits__stroke'),
+            slides = slider.querySelectorAll('.benefits__item'),
             btns = $('.benefits__btn'),
             slideWidth = slides[0].offsetWidth,
-            slideIndex = 0,
-            posInit = 0,
+            slideIndex = 0, //Индекс слайда
+            posInit = 0, //Постоянная переменная первого тапа
             posX1 = 0,
             posX2 = 0,
             posFinal = 0,
-            posThreshold = slides[0].offsetWidth * 0.35;
-        getEvent = () => event.type.search('touch') !== -1 ? event.touches[0] : event,
+            posThreshold = slideWidth / 2, //Граница после которой будет перелистывание
+            trfRegExp = /([-0-9.]+(?=px))/; //Регулярка для получения значения X из transform: translate3d
 
-            swipeStart = function() {
-                let evt = getEvent();
+        //Функция применяет изменения к wrapper
+        const slide = () => {
+            sliderWrapper.style.transition = 'transform .5s';
+            sliderWrapper.style.transform = `translate3d(-${slideIndex * slideWidth}px, 0px, 0px)`;
+            //Меняем активные лейблы по индексу
+            $(btns).removeClass('benefits__btn-active').eq(slideIndex).addClass('benefits__btn-active');
+        }
 
-                posInit = posX1 = evt.clientX;
+        //Action для touchstart
+        const swipeStart = (e) => {
+            //Получаем информацию о тапе
+            let evt = e.touches[0];
 
-                $(document).on('touchmove', swipeAction);
-                $(document).on('touchend', swipeEnd);
-                $(document).on('mousemove', swipeAction);
-                $(document).on('mouseup', swipeEnd);
-                sliderList.removeClass('grab');
-                sliderList.addClass('grabbing');
-            },
-            swipeAction = function() {
-                let evt = getEvent(),
-                    style = sliderTrack.position().left,
-                    transform = +style;
+            posInit = posX1 = evt.clientX;
 
-                posX2 = posX1 - evt.clientX;
-                posX1 = evt.clientX;
+            sliderWrapper.style.transition = '';
+        }
 
-                sliderTrack.css({
-                    'transform': `translate3d(${transform - posX2}px, 0px, 0px)`
-                });
-            },
-            slide = function() {
-                if (slideIndex <= 0) {
-                    slideIndex = 0;
-                } else if (slideIndex >= slides.length) {
-                    slideIndex = (slides.length - 1);
+        //action для touchmove
+        const swipeAction = (e) => {
+            //Получаем информацию о тапе
+            let evt = e.touches[0],
+                //Получаем стили transform для регулярки
+                style = sliderWrapper.style.transform,
+                //Готовое значение из регулярки присваиваем в transform
+                transform = +style.match(trfRegExp)[0];
+
+            posX2 = posX1 - evt.clientX;
+            posX1 = evt.clientX;
+
+            sliderWrapper.style.transform = `translate3d(${transform - posX2}px, 0px, 0px)`;
+        }
+
+        //action для touchend
+        const swipeEnd = () => {
+            posFinal = posInit - posX1;
+
+            //Логика для перелистывания
+            //posThreshold - граничное значения для перелистывания 1/2 от ширины слайда
+            if (Math.abs(posFinal) > posThreshold) {
+                if (posInit < posX1) {
+                    slideIndex--;
+                } else if (posInit > posX1) {
+                    slideIndex++;
                 }
-                sliderTrack.css({
-                    'transition': 'transform .5s'
-                });
-                sliderTrack.css({
-                    'transform': `translate3d(-${slideIndex * slideWidth}px, 0px, 0px)`
-                });
-                $(btns).removeClass('benefits__btn-active').eq(slideIndex).addClass('benefits__btn-active');
-            },
-            swipeEnd = function() {
-                posFinal = posInit - posX1;
+            }
 
-                $(document).off('touchmove', swipeAction);
-                $(document).off('mousemove', swipeAction);
-                $(document).off('touchend', swipeEnd);
-                $(document).off('mouseup', swipeEnd);
-                sliderList.addClass('grab');
-                sliderList.removeClass('grabbing');
+            if (posInit !== posX1) {
+                slide();
+            }
+        };
 
-                if (Math.abs(posFinal) > posThreshold) {
-                    if (posInit < posX1) {
-                        slideIndex--;
-                    } else if (posInit > posX1) {
-                        slideIndex++;
-                    }
-                }
+        slider.addEventListener('touchstart', swipeStart);
+        slider.addEventListener('touchmove', swipeAction);
+        slider.addEventListener('touchend', swipeEnd);
 
-                if (posInit !== posX1) {
-                    slide();
-                }
-
-            };
-
-        sliderTrack.css({
-            'transform': 'translate3d(0px, 0px, 0px)'
-        });
-        sliderList.addClass('grab');
-
-        slider.on('touchstart', swipeStart);
-        slider.on('mousedown', swipeStart);
+        sliderWrapper.style.transform = 'translate3d(0px, 0px, 0px)';
     }
     slider();
 });

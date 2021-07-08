@@ -54,7 +54,7 @@ function icons() {
 function css() {
     return gulp.src('./src/sass/**/*.scss')
         .pipe(sass({ outputStyle: 'compressed' }))
-        .pipe(autoprefixer())
+        .pipe(autoprefixer(['last 15 versions', '> 1%', 'ie 8', 'ie 7'], { cascade: true }))
         .pipe(cleanCSS())
         .pipe(gulp.dest('./src/styles/'))
         .pipe(gulp.dest('./dist/styles/'))
